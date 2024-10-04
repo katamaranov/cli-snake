@@ -58,17 +58,6 @@ void Push(FixedSizeArray *f, int *element) {
     }
 }
 
-_Bool isValid(int head[2], FixedSizeArray *f) {
-    int check = 0;
-    for (int b = 0; b < length; b++) {
-        int *gg = f->data[f->currentSize-b-1];
-        if (head[0] == gg[0] && head[1] == gg[1]) {
-            check = 1;
-        }
-    }
-    return (head[1] > 0 && head[1] < MAX_SIZE && head[0] > 0 && head[0] < MAX_SIZE && check != 1);
-}
-
 void PrintArray(FixedSizeArray *f) {
     int * tmp = malloc(2*sizeof(int));
     for (int i = 0; i < f->currentSize; i++) {
