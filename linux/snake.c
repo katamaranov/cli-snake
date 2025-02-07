@@ -12,7 +12,7 @@ char nap = ' ';
 int prev_index = 0; //я кароч хз, для меня всегда было проблемой обрабатывать нажатия клавиш, особенно в линухе. Тут для дефолтного направления в самом начале игры когда ты ещё ничего не нажал, используются индекс и действие, т.е 0 индекс это ось Y, 1 - это + соответственно змея по дефолту будет двигаться вниз (учитывая что верхний левый угол терминала это 0:0)
 int prev_d = 1;
 char prev_nap = 's';
-unsigned int head[2] = {2, 10};
+int head[2] = {2, 10};
 int food[2];
 
 int found;
@@ -66,6 +66,14 @@ char getKeyPress() {
     return ch;
 }
 
+void CompareWithHead(FixedSizeArray *f, int head[2]) {
+    for (int i = f->currentSize - 2; i >= ((f->currentSize - 1) - length); i--) {
+        if (f->data[i][0] == head[0] && f->data[i][1] == head[1]) {
+            exit(0);
+        }
+    }
+}
+
 void Push(FixedSizeArray *f, int *element) {
     if (f->currentSize < f->maxSize) {
         // Если еще есть место, просто добавляем элемент
@@ -92,14 +100,6 @@ int main() {
     food[0] = (rand() % (GRID_SIZE - 2)) + 1;
     food[1] = (rand() % (GRID_SIZE - 2)) + 1;
     printf("\033c");
-
-    int CompareWithHead(FixedSizeArray *f, unsigned int head[2]) {
-    for (int i = f->currentSize - 2; i >= ((f->currentSize - 1) - length); i--) { // X X X X X
-        if (f->data[i][0] == head[0] && f->data[i][1] == head[1]) {
-            exit(0);
-        }
-    }
-}
 
     for (;;) {
 
