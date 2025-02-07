@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_SIZE 400
+#define GRID_SIZE 40
 
 char nap = ' ';
 int prev_index = 0; //я кароч хз, для меня всегда было проблемой обрабатывать нажатия клавиш, особенно в линухе. Тут для дефолтного направления в самом начале игры когда ты ещё ничего не нажал, используются индекс и действие, т.е 0 индекс это ось Y, 1 - это + соответственно змея по дефолту будет двигаться вниз (учитывая что верхний левый угол терминала это 0:0)
@@ -16,6 +16,8 @@ unsigned int head[2] = {2, 10};
 int food[2];
 
 int found;
+
+int ms = GRID_SIZE * GRID_SIZE;
 
 int length = 0;
 
@@ -83,29 +85,12 @@ void Push(FixedSizeArray *f, int *element) {
     }
 }
 
-// void PrintArray(FixedSizeArray *f) {
-//     int * tmp = malloc(2*sizeof(int));
-//     for (int i = 0; i < f->currentSize; i++) {
-//             tmp = f->data[i];
-//             printf("[%d,%d] ", tmp[0], tmp[1]);
-//     }
-//     printf("\n");
-// }
-
-// void FreeArray(FixedSizeArray *f) {
-//     for (int i = 0; i < f->currentSize; i++) {
-//         free(f->data[i]);
-//     }
-//     free(f->data);
-//     free(f);
-// }
-
 int main() {
     srand(time(NULL));
 
-    FixedSizeArray *snake_body = NewFixedSizeArray(MAX_SIZE);
-    food[0] = (rand() % 18) + 1;
-    food[1] = (rand() % 18) + 1;
+    FixedSizeArray *snake_body = NewFixedSizeArray(ms);
+    food[0] = (rand() % (GRID_SIZE - 2)) + 1;
+    food[1] = (rand() % (GRID_SIZE - 2)) + 1;
     printf("\033c");
 
     int CompareWithHead(FixedSizeArray *f, unsigned int head[2]) {
@@ -182,12 +167,12 @@ int main() {
 
 		Push(snake_body, head);
 
-        if (head[0] == 19 || head[0] == 0 || head[1] == 19 || head[1] == 0) {
+        if (head[0] == (GRID_SIZE - 1) || head[0] == 0 || head[1] == (GRID_SIZE - 1) || head[1] == 0) {
 			exit(0);
 		}
 
-        for (int i = 0; i < 20; i++) {
-			for (int j = 0; j < 20; j++) {
+        for (int i = 0; i < GRID_SIZE; i++) {
+			for (int j = 0; j < GRID_SIZE; j++) {
                 found = 0;
 				for (int b = 1; b <= length; b++) {
 					if (i == snake_body->data[snake_body->currentSize-b-1][0] && j == snake_body->data[snake_body->currentSize-b-1][1]) {
@@ -195,7 +180,7 @@ int main() {
 					}
 				}
 
-				if (i == 0 || i == 19 || j == 0 || j == 19) {
+				if (i == 0 || i == GRID_SIZE - 1 || j == 0 || j == GRID_SIZE - 1) {
 					printf(" *");
 				} else if (i == head[0] && j == head[1]) {
 					printf(" @");
