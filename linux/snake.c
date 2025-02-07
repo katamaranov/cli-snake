@@ -102,7 +102,6 @@ void Push(FixedSizeArray *f, int *element) {
 
 int main() {
     srand(time(NULL));
-    tmp = (int *)malloc(2 * sizeof(int));
 
     FixedSizeArray *snake_body = NewFixedSizeArray(MAX_SIZE);
     food[0] = (rand() % 18) + 1;

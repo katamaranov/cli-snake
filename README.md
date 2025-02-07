@@ -1,2 +1,3 @@
-gcc snake.c -o snake
+```gcc snake.c -o snake```</br>
+
 ![example image](sample.gif)
