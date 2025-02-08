@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-#define GRID_SIZE 40
+#define GRID_SIZE 13
 
 char nap = ' ';
 int prev_index = 0; //я кароч хз, для меня всегда было проблемой обрабатывать нажатия клавиш, особенно в линухе. Тут для дефолтного направления в самом начале игры когда ты ещё ничего не нажал, используются индекс и действие, т.е 0 индекс это ось Y, 1 - это + соответственно змея по дефолту будет двигаться вниз (учитывая что верхний левый угол терминала это 0:0)
@@ -16,8 +16,6 @@ int head[2] = {2, 10};
 int food[2];
 
 int found;
-
-int ms = GRID_SIZE * GRID_SIZE;
 
 int length = 0;
 
@@ -66,12 +64,35 @@ char getKeyPress() {
     return ch;
 }
 
-void CompareWithHead(FixedSizeArray *f, int head[2]) {
+void SelfBiteCheck(FixedSizeArray *f, int head[2]) {
     for (int i = f->currentSize - 2; i >= ((f->currentSize - 1) - length); i--) {
         if (f->data[i][0] == head[0] && f->data[i][1] == head[1]) {
             exit(0);
         }
     }
+}
+
+void FoodBodyCheck(FixedSizeArray *f) {
+    int t = 0;
+    food[0] = (rand() % (GRID_SIZE - 2)) + 1;
+    food[1] = (rand() % (GRID_SIZE - 2)) + 1;
+
+    while (t != length) {
+
+    for (int i = f->currentSize - 2; i >= ((f->currentSize - 1) - length); i--) {
+        if (f->data[i][0] == food[0] && f->data[i][1] == food[1]) {
+            food[0] = (rand() % (GRID_SIZE - 2)) + 1;
+            food[1] = (rand() % (GRID_SIZE - 2)) + 1;
+            t = t * 0;
+        } else {
+            t = t + 1;
+        }
+    }
+    if (t != length) { t = 0; }
+    }
+
+    length++;
+
 }
 
 void Push(FixedSizeArray *f, int *element) {
@@ -96,7 +117,7 @@ void Push(FixedSizeArray *f, int *element) {
 int main() {
     srand(time(NULL));
 
-    FixedSizeArray *snake_body = NewFixedSizeArray(ms);
+    FixedSizeArray *snake_body = NewFixedSizeArray(GRID_SIZE * GRID_SIZE);
     food[0] = (rand() % (GRID_SIZE - 2)) + 1;
     food[1] = (rand() % (GRID_SIZE - 2)) + 1;
     printf("\033c");
@@ -106,12 +127,16 @@ int main() {
         nap = getKeyPress();
 
         if (head[0] == food[0] && head[1] == food[1]) {
-            food[0] = (rand() % 18) + 1;
-            food[1] = (rand() % 18) + 1;
-            length++;
+            if (length > 1) {
+                FoodBodyCheck(snake_body);
+            } else {
+                food[0] = (rand() % (GRID_SIZE - 2)) + 1;
+                food[1] = (rand() % (GRID_SIZE - 2)) + 1;
+                length++;
+            }
         }
 
-        CompareWithHead(snake_body, head);
+        SelfBiteCheck(snake_body, head);
 
         if (nap == 'w') { //i = y, j = x
 			if (prev_nap != 's') {
